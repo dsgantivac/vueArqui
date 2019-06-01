@@ -67,10 +67,10 @@
             async processFile(event) {
                 let data= new FormData()
                 let file =  event.target.files[0]
-                let operations = '"query": "mutation($uploads: [Upload!]!){\\n  uploadFiles(files:{\\n    uploads:$uploads\\n    name: \\"graphql\\"\\n    description:\\"prueba gql\\"\\n    owner: \\"diegun\\"\\n  },input:{email:\\"'+localStorage.email+'\\"\\n token: \\"'+localStorage.token+'\\"})\\n  {\\n    name\\n description\\n owner\\n path\\n advise\\n  }\\n}\\n", "variables": { "uploads": [null]}'
+                let operations ='{ "query": "mutation($uploads: [Upload!]!){  uploadFiles(files:{    uploads:$uploads    name: \\"graphql\\"    description:\\"prueba gql\\"    owner: \\"david\\"  },input:{email:\\"'+localStorage.email+'\\" token: \\"BdDuQjgGnW\\"})  {    name description owner path advise  }}", "variables": { "uploads": [null] } }'
                 data.append("operations",operations)
-                data.append('map',file)
-                data.append('file',file)
+                data.append('map','{ "0": ["variables.uploads.0"] }')
+                data.append('0',file)
 
                 const res = await axios.post('http://192.168.99.101:5000/graphql',data,{
                     headers: { 'Content-Type': 'multipart/form-data'  }
@@ -103,4 +103,12 @@ var files=[fs.createReadStream('/home/diego/Imágenes/test.png')]
         operations: '{ "query": "mutation($uploads: [Upload!]!){\\n  uploadFiles(files:{\\n    uploads:$uploads\\n    name: \\"graphql\\"\\n    description:\\"prueba gql\\"\\n    owner: \\"diegun\\"\\n  },input:{email:\\"unemail2@gmail.com\\"\\n token: \\"QnIcrnWpvU\\"})\\n  {\\n    name\\n description\\n owner\\n path\\n advise\\n  }\\n}\\n", "variables": { "uploads": '+ files+'} }'
       }
     };
+
+
+    curl http://192.168.99.101:5000/graphql   -F operations='{ "query": "mutation($uploads: [Upload!]!){\n  uploadFiles(files:{\n    uploads:$uploads\n    name: \"graphql\"\n    description:\"prueba gql\"\n    owner: \"david\"\n  },input:{email:\"dsgantivac@unal.edu.co\"\n token: \"BdDuQjgGnW\"})\n  {\n    name\n description\n owner\n path\n advise\n  }\n}\n", "variables": { "uploads": [null] } }'   -F map='{ "0": ["variables.uploads.0"] }'   -F 0=@/home/gantiva/Downloads/logoFinal.jpg
+
+
+
+
+
 -->
