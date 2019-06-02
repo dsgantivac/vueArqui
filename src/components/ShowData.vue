@@ -1,19 +1,70 @@
 <template>
     <div  class="login">
         <h1>welcome to data {{name}}</h1>
-        <h2>{{email}}</h2>
+        <h2 style="margin-bottom:30px;">{{email}}</h2>
         <!--
             <h2>{{token}}</h2>
             <h3>{{number}}</h3>
             <h1>upload: {{upload}}</h1>
             <button class="btn" @click="getList">get List </button>
+            <h1>{{current_path}}</h1>
         -->
 
 
-        <div v-for="(elements, index) in user_files" :key="index" class="listContainer">
-            <div class="folder-container">
-                <img height="120px" src="../assets/folder3.png" >
-                <div class="centered">{{elements.name}} </div>
+        <div v-if="current_path.length > 0">
+            <button class="btn" style="float:left" @click="popCurrentPath" >Retroceder</button>
+            <div style="clear:both;"></div>
+            <div  v-for="(elements, index) in current_path[current_path.length-1]" :key="index" class="listContainer">
+                <div class="folder-container">
+                    <div v-if="checkDot(elements.name)">
+                        <div v-if="getExtension(elements.name) == 'txt' ">
+                            <img height="120px" src="../assets/txt.png" >
+                            <div class="centered">{{remove(elements.name)}} </div>
+                        </div>
+                        <div v-if="getExtension(elements.name) == 'pdf' ">
+                            <img height="120px" src="../assets/pdf.png" >
+                            <div class="centered">{{remove(elements.name)}} </div>
+                        </div>
+                        <div v-else>
+                            <img height="120px" src="../assets/file.png" >
+                            <div class="centered">{{remove(elements.name)}} </div>
+                        </div>
+
+                    </div>
+                    <div v-if="!checkDot(elements.name)">
+                        <div @click="moveTo(elements.files)">
+                            <img height="120px" src="../assets/folder3.png" >
+                            <div class="centered"  >{{remove(elements.name)}} </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div v-if="current_path.length == 0">
+            <div  v-for="(elements, index) in user_files" :key="index" class="listContainer">
+                <div class="folder-container">
+                    <div v-if="checkDot(elements.name)">
+                        <div v-if="getExtension(elements.name) == 'txt' ">
+                            <img height="120px" src="../assets/txt.png" >
+                            <div class="centered">{{remove(elements.name)}} </div>
+                        </div>
+                        <div v-else>
+                            <img height="120px" src="../assets/file.png" >
+                            <div class="centered">{{remove(elements.name)}} </div>
+                        </div>
+
+
+                    </div>
+                    <div v-if="!checkDot(elements.name)">
+                        <div @click="moveTo(elements.files)">
+                            <img height="120px" src="../assets/folder3.png" >
+                            <div class="centered"  >{{remove(elements.name)}} </div>
+                        </div>
+                    </div>
+
+                </div>
             </div>
         </div>
         <div style="clear:both;"></div>
@@ -44,13 +95,11 @@
 
         <button class="btn" @click="deleteFile">delete file </button>
         <button class="btn" @click="showCreateFolderFN">create folder </button>
-
-
     </div>
 </template>
 
 <script>
-    import axios from 'axios'
+    import axios from 'axios';
     export default {
         name: 'ShowData',
         data(){
@@ -65,7 +114,8 @@
                 folderName: "",
                 number: 1,
                 advise:"",
-                user_files:[]
+                user_files:[],
+                current_path:[]
             }
         },
         mounted(){
@@ -84,10 +134,31 @@
         },
         methods: {
 
+            remove: function (name) {
+                return name.replace("_dot_",".")
+            },
+            checkDot: function(name){
+                return(name.includes("_dot_"))
+            },
+            moveTo: function (fileList) {
+                this.current_path.push(fileList)
+            },
+            popCurrentPath: function() {
+                this.current_path.pop()
+            },
+            getExtension: function(filename){
+                let ret = filename.split('_dot_').pop();
+                console.log(ret);
+                return ret
+            }
+            ,
             async deleteFile  () {
                 this.number +=1;
             },
             async showCreateFolderFN  () {
+                this.showCreateFolder = !this.showCreateFolder;
+            },
+            async Download  () {
                 this.showCreateFolder = !this.showCreateFolder;
             },
             async getList(){
@@ -130,6 +201,7 @@
                                 }`
                 })
                 let tmp = res.data.data.downloadList.files;
+
                 for (let index = 0; index < tmp.length; index++) {
                     this.user_files.push(tmp[index])
                 }
