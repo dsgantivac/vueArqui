@@ -14,7 +14,54 @@ body {
   }
 
   .login{
+
+    margin: 0 auto;
     text-align: center;
+  }
+  .createCard{
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  }
+
+  .cardContent{
+    margin: 0 auto;
+    text-align: center;
+    background-color: whitesmoke;
+    width: 600px;
+    height: 280px;
+    border-radius: 25px;
+  }
+
+  input{
+    padding: 16px;
+    border: none;
+    border-bottom: 2px solid #694ed6;
+    margin: 10px 0;
+    transition: .25s all;
+  }
+
+  input:focus{
+    outline: none;
+    box-shadow: 0 0 10px rgba(0,0,0,.125);
+    border: 2px solid #694ed6;
+    border-radius: 10px;
+    transition: .25s all;
+  }
+
+  .cardTitle{
+    border-radius: 25px 25px 0px 0px;
+    background: #694ed6;
+    padding: 10px 0 20px 0;
+    color:white;
+    font-size: 25px;
   }
 
   .upload{
@@ -61,22 +108,17 @@ body {
   }
 
   .folder-container{
+
+    margin: 0 auto;
+    text-align: center;
     position: relative;
     text-align: center;
-    color: white;
+    color: black;
     float: left;
     margin: 0px 10px 0px 0px;
   }
 
-  .centered {
 
-    font-size: 15px;
-    font-weight: bold;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
 
   
   @media only screen and (max-width: 390px)

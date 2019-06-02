@@ -52,7 +52,7 @@
     background: #694ed6;
     cursor: pointer;
     border-radius: 15px;
-    margin: 0px 10px 0px 10px;
+    margin: 10px 10px 0px 10px;
     padding: 16px;
     width: 200px;
     color: white;
