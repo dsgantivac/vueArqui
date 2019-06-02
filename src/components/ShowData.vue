@@ -2,17 +2,11 @@
     <div  class="login">
         <h1>welcome to data {{name}}</h1>
         <h2 style="margin-bottom:30px;">{{email}}</h2>
-        <!--
-            <h2>{{token}}</h2>
-            <h3>{{number}}</h3>
-            <h1>upload: {{upload}}</h1>
-            <button class="btn" @click="getList">get List </button>
-            <h1>{{current_path}}</h1>
-        -->
+        <h2 style="margin-bottom:30px;">{{token}}</h2>
 
-
-        <div v-if="current_path.length > 0">
+        <div v-if="current_path.length > 1">
             <button class="btn" style="float:left" @click="popCurrentPath" >Retroceder</button>
+        </div>
             <div style="clear:both;"></div>
             <div  v-for="(elements, index) in current_path[current_path.length-1]" :key="index" class="listContainer">
                 <div class="folder-container" height="120px">
@@ -26,46 +20,19 @@
                         <div v-else>
                             <img height="120px" src="../assets/file.png" >
                         </div>
-                        <div class="centered">{{remove(elements.name)}} </div>
+                        <div class="centered">{{addDot(elements.name)}} </div>
                     </div>
 
                     <div v-if="!checkDot(elements.name)">
                         <div @click="moveTo(elements.files)">
                             <img height="120px" src="../assets/folder3.png" >
-                            <div class="centered"  >{{remove(elements.name)}} </div>
+                            <div class="centered"  >{{addDot(elements.name)}} </div>
                         </div>
                     </div>
-                    <span class="glyphicon glyphicon-option-vertical" @click=""></span>
+                    <span @click="getOptions(elements.name,elements.path)"  class="glyphicon glyphicon-option-vertical bottom-right-image" ></span>
                 </div>
             </div>
-        </div>
 
-        <div v-if="current_path.length == 0">
-            <div  v-for="(elements, index) in user_files" :key="index" class="listContainer">
-                <div class="folder-container">
-                    <div v-if="checkDot(elements.name)">
-                        <div v-if="getExtension(elements.name) == 'txt' ">
-                            <img height="120px" src="../assets/txt.png" >
-                        </div>
-                        <div v-else-if="getExtension(elements.name) == 'pdf' ">
-                            <img height="120px" src="../assets/pdf.png" >
-                        </div>
-                        <div v-else>
-                            <img height="120px" src="../assets/file.png" >
-                        </div>
-                            <div class="centered">{{remove(elements.name)}} </div>
-                    </div>
-                    <div v-if="!checkDot(elements.name)">
-                        <div @click="moveTo(elements.files)">
-                            <img height="120px" src="../assets/folder3.png" >
-                            <div class="centered"  >{{remove(elements.name)}} </div>
-                        </div>
-                    </div>
-                    <span @click="showOptions" class="glyphicon glyphicon-option-vertical bottom-right-image"></span>
-
-                </div>
-            </div>
-        </div>
         <div style="clear:both;"></div>
 
         <div class="upload" >
@@ -76,7 +43,35 @@
         </div>
 
         <div class="OptionCard" v-if="showOptions">
+            <div class="cardContent" style="height:330px" >
+                <div class="cardTitle" >
+                    Opciones de {{addDot(folderOptionName)}}
+                </div>
 
+                <h3>{{advise}}</h3>
+                <div v-if="!MoveToShow" >
+                    <button class="btn" @click="ShowMoveFile">Mover </button><br/>
+                    <button class="btn" @click="hideOption">Eliminar </button><br/>
+                    <button class="btn" @click="hideOption">Cancelar </button>
+                </div>
+                <!-- AQUI SE HACE EL MOVER LAS CARPETAS DE MONDA-->
+
+                <div v-if="MoveToShow" >
+                    <p>Selecciona la carpeta destino</p><br/>
+                    <select v-model="fileDestiny">
+                        <option v-if="current_path.length > 1 ">
+                            Extraer de la carpeta
+                        </option>
+                        <option v-for="(item, index) in possiblePaths" :key="index">
+                                {{item}}
+                        </option>
+
+                    </select>
+                    <br/>
+                    <button class="btn" @click="moveFile">Mover </button>
+                    <button class="btn" @click="ShowMoveFile">Cancelar </button>
+                </div>
+            </div>
         </div>
 
         <div class="createCard" v-if="showCreateFolder" >
@@ -92,13 +87,17 @@
                     <button class="btn" @click="showCreateFolderFN">Cancelar </button>
                     <button class="btn" @click="createFolder">Crear carpeta </button>
                 </div>
-
             </div>
         </div>
 
 
         <button class="btn" @click="deleteFile">delete file </button>
         <button class="btn" @click="showCreateFolderFN">create folder </button>
+        <button class="btn" @click="moveFile">moveFile </button>
+        <h1>Origin: {{fileOrigin}}</h1>
+        <h1>Destiny: {{fileDestiny+addDot(folderOptionName)}}</h1>
+        <h1>MoveReturn : {{moveReturn}}</h1>
+
     </div>
 </template>
 
@@ -115,11 +114,18 @@
                 someData: [],
                 upload: [],
                 showCreateFolder: false,
+                showOptions: false,
+                folderOptionName: "",
                 folderName: "",
+                MoveToShow: false,
                 number: 1,
                 advise:"",
                 user_files:[],
-                current_path:[]
+                current_path:[],
+                moveReturn: [],
+                possiblePaths: [],
+                fileOrigin: "",
+                fileDestiny: ""
             }
         },
         mounted(){
@@ -133,12 +139,13 @@
                     this.token = localStorage.token
                     console.log("in session");
                     this.getList()
+                    this.current_path.push(this.user_files)
                 }
             }
         },
         methods: {
 
-            remove: function (name) {
+            addDot: function (name) {
                 return name.replace("_dot_",".")
             },
             checkDot: function(name){
@@ -152,11 +159,35 @@
             },
             getExtension: function(filename){
                 let ret = filename.split('_dot_').pop();
-                console.log(ret);
                 return ret
             },
-            showOptions: function(){
+            getOptions: function(fName,path){
+                this.showOptions = true
+                this.folderOptionName = fName
+                this.fileOrigin = path;
                 console.log("displayed");
+                console.log(this.fileOrigin);
+            },
+            hideOption: function () {
+                this.showOptions = false
+                this.folderOptionName = ""
+                this.fileOrigin = ""
+                this.fileDestiny = ""
+            },
+            adviseError: function(msg){
+                this.advise = msg
+                setTimeout(() => this.advise="", 3000);
+            },
+            ShowMoveFile: function () {
+                let arr = this.current_path[this.current_path.length-1]
+                this.possiblePaths = []
+                for (let i = 0; i < arr.length; i++) {
+                    if(!this.checkDot(arr[i].name)){
+                        this.possiblePaths.push(arr[i].name)
+                    }
+                }
+                console.log(this.possiblePaths);
+                this.MoveToShow = !this.MoveToShow
             }
             ,
             async deleteFile  () {
@@ -220,8 +251,8 @@
                     const res = await axios.post('http://192.168.99.101:5000/graphql', {
                         query:`mutation{
                             createFolder(create:{
-                                owner: "`+localStorage.name+`"
-                            path: "/SharedStorage/`+this.folderName+`"
+                                owner: "sergio"
+                            path: "/SharedStorage/sergio/`+this.folderName+`"
                         },input:{
                             email: "`+localStorage.email+`"
                             token: "`+localStorage.token+`"
@@ -234,10 +265,9 @@
                         }
                     }`
                 })
-                console.log(res.data.data.createFolder);
+                console.log(res);
                 }else{
-                    this.advise = "El nombre no puede estar vacio"
-                    setTimeout(() => this.advise="", 3000);
+                    this.adviseError("El nombre no puede estar vacio")
                 }
             },
             async processFile(event) {
@@ -255,6 +285,51 @@
 
                 console.log(file);
                 this.upload = res.data.data
+            },
+            async moveFile () {
+
+                    if(this.fileDestiny == "Extraer de la carpeta"){
+                        this.fileDestiny = this.fileOrigin.replace(this.addDot(this.folderOptionName),"")
+                        this.fileDestiny = this.fileDestiny.replace("/sergio","")
+                        this.fileDestiny = this.fileDestiny.replace("/SharedStorage","")
+                        let tmp = this.fileDestiny.split("/")
+                        this.fileDestiny = this.fileDestiny.replace(tmp[tmp.length - 2]+"/","")
+                        console.log(this.fileDestiny);
+                    }else{
+                        this.fileDestiny = this.fileOrigin.replace(this.addDot(this.folderOptionName),"") + this.fileDestiny
+                        this.fileDestiny = this.fileDestiny.replace("/sergio","")
+                        this.fileDestiny = this.fileDestiny.replace("/SharedStorage","")
+                        this.fileDestiny += "/"
+
+                    }
+
+                    const res = await axios.post('http://192.168.99.101:5000/graphql', {
+                        query:`mutation{
+                                    moveFile(move:{
+                                        owner:"sergio"
+                                        #origen, incluyendo el archivo (graphql en este caso)
+                                        origin:"`+this.fileOrigin+`"
+                                        #destino, incluyendo el archivo (graphql en este caso)
+                                        destiny:"/SharedStorage/sergio/`+this.fileDestiny+this.addDot(this.folderOptionName)+`"
+
+                                    },input:{
+                                        email: "`+localStorage.email+`"
+                                        token: "`+localStorage.token+`"
+                                    })
+                                    {
+                                        move_id
+                                        owner
+                                        origin
+                                        destiny
+                                        date
+                                        advise
+                                    }
+                                }
+`
+                })
+                this.moveReturn = res.data.data.moveFile
+                console.log(res.data.data);
+
             }
 
         },
