@@ -1,0 +1,14 @@
+version: '2.1'
+
+services:
+
+  web_fe:
+    container_name: web_fe
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - '.:/app'
+      - '/app/node_modules'
+    ports:
+      - '8050:8080'
