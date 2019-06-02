@@ -15,29 +15,27 @@
             <button class="btn" style="float:left" @click="popCurrentPath" >Retroceder</button>
             <div style="clear:both;"></div>
             <div  v-for="(elements, index) in current_path[current_path.length-1]" :key="index" class="listContainer">
-                <div class="folder-container">
+                <div class="folder-container" height="120px">
                     <div v-if="checkDot(elements.name)">
                         <div v-if="getExtension(elements.name) == 'txt' ">
                             <img height="120px" src="../assets/txt.png" >
-                            <div class="centered">{{remove(elements.name)}} </div>
                         </div>
-                        <div v-if="getExtension(elements.name) == 'pdf' ">
+                        <div v-else-if="getExtension(elements.name) == 'pdf' ">
                             <img height="120px" src="../assets/pdf.png" >
-                            <div class="centered">{{remove(elements.name)}} </div>
                         </div>
                         <div v-else>
                             <img height="120px" src="../assets/file.png" >
-                            <div class="centered">{{remove(elements.name)}} </div>
                         </div>
-
+                        <div class="centered">{{remove(elements.name)}} </div>
                     </div>
+
                     <div v-if="!checkDot(elements.name)">
                         <div @click="moveTo(elements.files)">
                             <img height="120px" src="../assets/folder3.png" >
                             <div class="centered"  >{{remove(elements.name)}} </div>
                         </div>
                     </div>
-
+                    <span class="glyphicon glyphicon-option-vertical" @click=""></span>
                 </div>
             </div>
         </div>
@@ -48,14 +46,14 @@
                     <div v-if="checkDot(elements.name)">
                         <div v-if="getExtension(elements.name) == 'txt' ">
                             <img height="120px" src="../assets/txt.png" >
-                            <div class="centered">{{remove(elements.name)}} </div>
+                        </div>
+                        <div v-else-if="getExtension(elements.name) == 'pdf' ">
+                            <img height="120px" src="../assets/pdf.png" >
                         </div>
                         <div v-else>
                             <img height="120px" src="../assets/file.png" >
-                            <div class="centered">{{remove(elements.name)}} </div>
                         </div>
-
-
+                            <div class="centered">{{remove(elements.name)}} </div>
                     </div>
                     <div v-if="!checkDot(elements.name)">
                         <div @click="moveTo(elements.files)">
@@ -63,6 +61,7 @@
                             <div class="centered"  >{{remove(elements.name)}} </div>
                         </div>
                     </div>
+                    <span @click="showOptions" class="glyphicon glyphicon-option-vertical bottom-right-image"></span>
 
                 </div>
             </div>
@@ -75,6 +74,11 @@
             </label>
             <input class="inputfile" id="file" type="file" @change="processFile($event)">
         </div>
+
+        <div class="OptionCard" v-if="showOptions">
+
+        </div>
+
         <div class="createCard" v-if="showCreateFolder" >
             <div class="cardContent" >
                 <div class="cardTitle" >
@@ -150,6 +154,9 @@
                 let ret = filename.split('_dot_').pop();
                 console.log(ret);
                 return ret
+            },
+            showOptions: function(){
+                console.log("displayed");
             }
             ,
             async deleteFile  () {
