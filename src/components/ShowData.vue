@@ -3,6 +3,7 @@
         <h1>welcome to data {{name}}</h1>
         <h2>{{email}}</h2>
         <h2>{{token}}</h2>
+        <h3>{{number}}</h3>
 
 
         <div v-for="(elements,index) in champions" :key="index">
@@ -24,7 +25,29 @@
             </label>
             <input class="inputfile" id="file" type="file" @change="processFile($event)">
         </div>
-        <button class="btn" @click="getChampions">Get champions</button>
+        <div class="createCard" v-if="showCreateFolder" >
+            <div class="cardContent" >
+                <div class="cardTitle" >
+                    Crear carpeta
+                </div>
+                <div >
+                    <input v-model="folderName" type="text" placeholder="Nombre de la carpeta">
+                </div>
+                <div style="float:left;margin-left:80px">
+                    <h3>{{advise}}</h3>
+                    <button class="btn" @click="showCreateFolderFN">close create folder </button>
+                    <button class="btn" @click="createFolder">create folder </button>
+                </div>
+
+            </div>
+        </div>
+
+
+        <button class="btn" @click="getChampions">get champions </button>
+        <button class="btn" @click="deleteFile">delete file </button>
+        <button class="btn" @click="getList">get List </button>
+        <button class="btn" @click="showCreateFolderFN">create folder </button>
+        <h1>files: {{files}}</h1>
     </div>
 </template>
 
@@ -40,7 +63,12 @@
                 password:"12345678",
                 token:"",
                 someData: [],
-                upload: []
+                upload: [],
+                showCreateFolder: false,
+                folderName: "",
+                number: 1,
+                advise:"",
+                files:[]
             }
         },
         mounted(){
@@ -58,6 +86,81 @@
         }
         ,methods: {
 
+            async deleteFile  () {
+                this.number +=1;
+            },
+            async showCreateFolderFN  () {
+                this.showCreateFolder = !this.showCreateFolder;
+            },
+            async getList(){
+                const res = await axios.post('http://192.168.99.101:5000/graphql', {
+                        query:`mutation{
+                                downloadList(owner:{
+                                    owner:"sergio"
+                                },input:{
+                                    email:"`+localStorage.email+`",
+                                    token:"`+localStorage.token+`"
+                                }){
+                                    name
+                                    owner
+                                    path
+                                    ...filesRecursive
+                                }
+                                }
+                                fragment filesRecursive on File {
+                                files{
+                                    ...fileFields
+                                    files{
+                                        ...fileFields
+                                    files{
+                                        ...fileFields
+                                        files{
+                                            ...fileFields
+                                            files{
+                                                ...fileFields
+                                            }
+                                        }
+                                    }
+                                    }
+                                }
+                                }
+
+                                fragment fileFields on File {
+                                    name
+                                    owner
+                                    path
+                                }`
+                })
+                console.log(res.data.data);
+                this.files =res.data.data.downloadList
+            }
+            ,
+            async createFolder  () {
+                if(this.folderName != ""){
+
+                    const res = await axios.post('http://192.168.99.101:5000/graphql', {
+                        query:`mutation{
+                            createFolder(create:{
+                                owner: "`+localStorage.name+`"
+                            path: "/SharedStorage/`+this.folderName+`"
+                        },input:{
+                            email: "`+localStorage.email+`"
+                            token: "`+localStorage.token+`"
+                        }){
+                            create_id
+                            owner
+                            path
+                            date
+                            advise
+                        }
+                    }`
+                })
+                console.log(res.data.data.createFolder);
+                }else{
+                    this.advise = "El nombre no puede estar vacio"
+                    setTimeout(() => this.advise="", 3000);
+                }
+            },
             async getChampions(){
                 const res = await axios.post('http://localhost:4000/graphql',{
                     query: "{ getChampions{name attackDamage link_page}}"
@@ -67,7 +170,8 @@
             async processFile(event) {
                 let data= new FormData()
                 let file =  event.target.files[0]
-                let operations ='{ "query": "mutation($uploads: [Upload!]!){  uploadFiles(files:{    uploads:$uploads    name: \\"graphql\\"    description:\\"prueba gql\\"    owner: \\"david\\"  },input:{email:\\"'+localStorage.email+'\\" token: \\"BdDuQjgGnW\\"})  {    name description owner path advise  }}", "variables": { "uploads": [null] } }'
+                //console.log(file.name);
+                let operations ='{ "query": "mutation($uploads: [Upload!]!){  uploadFiles(files:{    uploads:$uploads    name: \\"'+file.name+'\\"    description:\\"prueba gql\\"    owner: \\"'+localStorage.name+'\\"  },input:{email:\\"'+localStorage.email+'\\" token: \\"'+localStorage.token+'\\"})  {    name description owner path advise  }}", "variables": { "uploads": [null] } }'
                 data.append("operations",operations)
                 data.append('map','{ "0": ["variables.uploads.0"] }')
                 data.append('0',file)
