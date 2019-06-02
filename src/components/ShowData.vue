@@ -2,21 +2,20 @@
     <div  class="login">
         <h1>welcome to data {{name}}</h1>
         <h2>{{email}}</h2>
-        <h2>{{token}}</h2>
-        <h3>{{number}}</h3>
+        <!--
+            <h2>{{token}}</h2>
+            <h3>{{number}}</h3>
+            <h1>upload: {{upload}}</h1>
+            <button class="btn" @click="getList">get List </button>
+        -->
 
 
-        <div v-for="(elements,index) in champions" :key="index">
-            <div v-for="(champion,index) in elements" :key="index">
-                <a v-bind:href="champion.link_page">
-                <div class="folder-container">
-                    <img height="120px" src="../assets/folder3.png" >
-                    <div class="centered">{{champion.name}} </div>
-                </div>
-                </a>
+        <div v-for="(elements, index) in user_files" :key="index" class="listContainer">
+            <div class="folder-container">
+                <img height="120px" src="../assets/folder3.png" >
+                <div class="centered">{{elements.name}} </div>
             </div>
         </div>
-        <h1>upload: {{upload}}</h1>
         <div style="clear:both;"></div>
 
         <div class="upload" >
@@ -35,19 +34,18 @@
                 </div>
                 <div style="float:left;margin-left:80px">
                     <h3>{{advise}}</h3>
-                    <button class="btn" @click="showCreateFolderFN">close create folder </button>
-                    <button class="btn" @click="createFolder">create folder </button>
+                    <button class="btn" @click="showCreateFolderFN">Cancelar </button>
+                    <button class="btn" @click="createFolder">Crear carpeta </button>
                 </div>
 
             </div>
         </div>
 
 
-        <button class="btn" @click="getChampions">get champions </button>
         <button class="btn" @click="deleteFile">delete file </button>
-        <button class="btn" @click="getList">get List </button>
         <button class="btn" @click="showCreateFolderFN">create folder </button>
-        <h1>files: {{files}}</h1>
+
+
     </div>
 </template>
 
@@ -57,7 +55,6 @@
         name: 'ShowData',
         data(){
             return{
-                champions: [],
                 name:"",
                 email:"dsgantivac@unal.edu.co",
                 password:"12345678",
@@ -68,7 +65,7 @@
                 folderName: "",
                 number: 1,
                 advise:"",
-                files:[]
+                user_files:[]
             }
         },
         mounted(){
@@ -81,10 +78,11 @@
                     this.email = localStorage.email
                     this.token = localStorage.token
                     console.log("in session");
+                    this.getList()
                 }
             }
-        }
-        ,methods: {
+        },
+        methods: {
 
             async deleteFile  () {
                 this.number +=1;
@@ -131,8 +129,10 @@
                                     path
                                 }`
                 })
-                console.log(res.data.data);
-                this.files =res.data.data.downloadList
+                let tmp = res.data.data.downloadList.files;
+                for (let index = 0; index < tmp.length; index++) {
+                    this.user_files.push(tmp[index])
+                }
             }
             ,
             async createFolder  () {
@@ -160,12 +160,6 @@
                     this.advise = "El nombre no puede estar vacio"
                     setTimeout(() => this.advise="", 3000);
                 }
-            },
-            async getChampions(){
-                const res = await axios.post('http://localhost:4000/graphql',{
-                    query: "{ getChampions{name attackDamage link_page}}"
-                })
-                this.champions = res.data.data
             },
             async processFile(event) {
                 let data= new FormData()

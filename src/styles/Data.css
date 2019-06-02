@@ -105,10 +105,10 @@ body {
     color: white;
     font-size: 20px;
     box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.2);
+    
   }
 
   .folder-container{
-
     margin: 0 auto;
     text-align: center;
     position: relative;
@@ -116,6 +116,16 @@ body {
     color: black;
     float: left;
     margin: 0px 10px 0px 0px;
+    cursor: pointer;
+  }
+
+  .folder-container:hover{
+    opacity: 0.8;
+  }
+
+
+  .listContainer{
+    margin-left: 10px;
   }
 
 

@@ -74,6 +74,7 @@ export default {
                 localStorage.email = this.email;
                 localStorage.name = this.name;
                 localStorage.token = res.data.data.createUser.token;
+                this.$router.go(0)
 
             }else{
                 localStorage.session = false

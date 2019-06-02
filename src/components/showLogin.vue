@@ -74,16 +74,12 @@ export default {
             localStorage.name = res.data.data.userSession.name;
             localStorage.token = res.data.data.userSession.token;
             this.is_signed = true
-            this.$router.push({name: 'Data'})
+            this.$router.go(0)
         }else{
             localStorage.session = false
             this.is_signed = false
         }
 
-      },
-      persist(){
-        localStorage.session = this.is_signed;
-        console.log('now pretend I did more stuff...');
       }
     }
 }
