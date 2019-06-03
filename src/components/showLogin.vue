@@ -34,7 +34,9 @@ export default {
             token:"",
             advise:"",
             response:"",
-            is_signed: false
+            is_signed: false,
+//                hostname: "http://192.168.99.101:5000/graphql"
+            hostname: "http://34.73.216.116:5000/graphql"
         }
     },
     mounted() {
@@ -49,7 +51,7 @@ export default {
     },
     methods:{
         async postLogin() {
-            const res = await axios.post('http://192.168.99.101:5000/graphql', {
+            const res = await axios.post(this.hostname, {
             query:`
             mutation{
                 userSession(user:{

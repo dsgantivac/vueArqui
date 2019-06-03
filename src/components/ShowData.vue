@@ -21,6 +21,7 @@
                             <img height="120px" src="../assets/file.png" >
                         </div>
                         <div class="centered">{{addDot(elements.name)}} </div>
+
                     </div>
 
                     <div v-if="!checkDot(elements.name)">
@@ -51,7 +52,7 @@
                 <h3>{{advise}}</h3>
                 <div v-if="!MoveToShow" >
                     <button class="btn" @click="ShowMoveFile">Mover </button><br/>
-                    <button class="btn" @click="hideOption">Eliminar </button><br/>
+                    <button class="btn" @click="deleteFile">Eliminar </button><br/>
                     <button class="btn" @click="hideOption">Cancelar </button>
                 </div>
                 <!-- AQUI SE HACE EL MOVER LAS CARPETAS DE MONDA-->
@@ -94,7 +95,7 @@
         <button class="btn" @click="deleteFile">delete file </button>
         <button class="btn" @click="showCreateFolderFN">create folder </button>
         <button class="btn" @click="moveFile">moveFile </button>
-        <h1>Origin: {{fileOrigin}}</h1>
+        <h1>Origin: {{fileOrigin+addDot(folderOptionName)}}</h1>
         <h1>Destiny: {{fileDestiny+addDot(folderOptionName)}}</h1>
         <h1>MoveReturn : {{moveReturn}}</h1>
 
@@ -125,7 +126,9 @@
                 moveReturn: [],
                 possiblePaths: [],
                 fileOrigin: "",
-                fileDestiny: ""
+                fileDestiny: "",
+//                hostname: "http://192.168.99.101:5000/graphql"
+                hostname: "http://34.73.216.116:5000/graphql"
             }
         },
         mounted(){
@@ -191,7 +194,41 @@
             }
             ,
             async deleteFile  () {
-                this.number +=1;
+                /**
+
+                if(true){
+                    if(this.checkDot(this.folderOptionName)){
+                        console.log("es archivo");
+
+                    }else{
+                        console.log("Es carpeta");
+                        this.fileOrigin = "/SharedStorage/sergio/"+this.folderOptionName
+                    }
+                    console.log(this.fileOrigin);
+
+                }
+       */
+
+                    const res = await axios.post(this.hostname, {
+                        query:`mutation{
+                            deleteFile(del:{
+                                owner: "prueba"
+                                    path: "`+this.fileOrigin+`"
+                                },input:{
+                                    email: "`+localStorage.email+`"
+                                    token: "`+localStorage.token+`"
+                                }){
+                                    del_id
+                                    owner
+                                    path
+                                    date
+                                    advise
+                                }
+                                }`
+                })
+                console.log(res.data.data);
+
+
             },
             async showCreateFolderFN  () {
                 this.showCreateFolder = !this.showCreateFolder;
@@ -200,7 +237,8 @@
                 this.showCreateFolder = !this.showCreateFolder;
             },
             async getList(){
-                const res = await axios.post('http://192.168.99.101:5000/graphql', {
+                console.log("se ejecuta el list");
+                const res = await axios.post(this.hostname, {
                         query:`mutation{
                                 downloadList(owner:{
                                     owner:"sergio"
@@ -239,7 +277,7 @@
                                 }`
                 })
                 let tmp = res.data.data.downloadList.files;
-
+                console.log(res);
                 for (let index = 0; index < tmp.length; index++) {
                     this.user_files.push(tmp[index])
                 }
@@ -248,7 +286,7 @@
             async createFolder  () {
                 if(this.folderName != ""){
 
-                    const res = await axios.post('http://192.168.99.101:5000/graphql', {
+                    const res = await axios.post(this.hostname, {
                         query:`mutation{
                             createFolder(create:{
                                 owner: "sergio"
@@ -274,12 +312,12 @@
                 let data= new FormData()
                 let file =  event.target.files[0]
                 //console.log(file.name);
-                let operations ='{ "query": "mutation($uploads: [Upload!]!){  uploadFiles(files:{    uploads:$uploads    name: \\"'+file.name+'\\"    description:\\"prueba gql\\"    owner: \\"'+localStorage.name+'\\"  },input:{email:\\"'+localStorage.email+'\\" token: \\"'+localStorage.token+'\\"})  {    name description owner path advise  }}", "variables": { "uploads": [null] } }'
+                let operations ='{ "query": "mutation($uploads: [Upload!]!){  uploadFiles(files:{    uploads:$uploads    name: \\"'+file.name+'\\"    description:\\"prueba gql\\"    owner: \\"sergio\\"  },input:{email:\\"'+localStorage.email+'\\" token: \\"'+localStorage.token+'\\"})  {    name description owner path advise  }}", "variables": { "uploads": [null] } }'
                 data.append("operations",operations)
                 data.append('map','{ "0": ["variables.uploads.0"] }')
                 data.append('0',file)
 
-                const res = await axios.post('http://192.168.99.101:5000/graphql',data,{
+                const res = await axios.post(this.hostname,data,{
                     headers: { 'Content-Type': 'multipart/form-data'  }
                 } )
 
@@ -289,28 +327,40 @@
             async moveFile () {
 
                     if(this.fileDestiny == "Extraer de la carpeta"){
-                        this.fileDestiny = this.fileOrigin.replace(this.addDot(this.folderOptionName),"")
-                        this.fileDestiny = this.fileDestiny.replace("/sergio","")
-                        this.fileDestiny = this.fileDestiny.replace("/SharedStorage","")
-                        let tmp = this.fileDestiny.split("/")
-                        this.fileDestiny = this.fileDestiny.replace(tmp[tmp.length - 2]+"/","")
+                        console.log(this.fileOrigin);
+                        this.fileOrigin = this.fileOrigin.replace("/SharedStorage","")
+                        this.fileOrigin = this.fileOrigin.replace("/sergio","")
+                        console.log(this.fileOrigin);
+
+                        let tmp = this.fileOrigin.split("/")
+                        //console.log(tmp);
+                        this.fileDestiny = this.fileOrigin.replace("/"+tmp[tmp.length - 2],"")
                         console.log(this.fileDestiny);
+
+                        //return;
                     }else{
+                        if( this.fileOrigin == null){
+                             this.fileOrigin = "/"+this.addDot(this.folderOptionName)
+                        }
                         this.fileDestiny = this.fileOrigin.replace(this.addDot(this.folderOptionName),"") + this.fileDestiny
-                        this.fileDestiny = this.fileDestiny.replace("/sergio","")
+                        this.fileDestiny = this.fileDestiny.replace("/"+"sergio","")
                         this.fileDestiny = this.fileDestiny.replace("/SharedStorage","")
-                        this.fileDestiny += "/"
+                        this.fileOrigin = this.fileOrigin.replace("/"+"sergio","")
+                        this.fileOrigin = this.fileOrigin.replace("/SharedStorage","")
+                        this.fileDestiny += "/"+this.addDot(this.folderOptionName)
+                        console.log(this.fileOrigin);
+                        console.log(this.fileDestiny);
 
                     }
 
-                    const res = await axios.post('http://192.168.99.101:5000/graphql', {
+                    const res = await axios.post(this.hostname, {
                         query:`mutation{
                                     moveFile(move:{
                                         owner:"sergio"
                                         #origen, incluyendo el archivo (graphql en este caso)
-                                        origin:"`+this.fileOrigin+`"
+                                        origin:"/SharedStorage/sergio/`+this.fileOrigin+`"
                                         #destino, incluyendo el archivo (graphql en este caso)
-                                        destiny:"/SharedStorage/sergio/`+this.fileDestiny+this.addDot(this.folderOptionName)+`"
+                                        destiny:"/SharedStorage/sergio/`+this.fileDestiny+`"
 
                                     },input:{
                                         email: "`+localStorage.email+`"
@@ -324,8 +374,7 @@
                                         date
                                         advise
                                     }
-                                }
-`
+                                }`
                 })
                 this.moveReturn = res.data.data.moveFile
                 console.log(res.data.data);
