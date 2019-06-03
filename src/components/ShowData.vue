@@ -23,6 +23,7 @@
                                 <img height="120px" src="../assets/file.png" >
                             </div>
                             <div class="centered">{{addDot(elements.name)}} </div>
+                            <div class="centered">{{addDot(elements.path)}} </div>
                         </div>
 
                     </div>
@@ -95,9 +96,7 @@
         </div>
 
 
-        <button class="btn" @click="deleteFile">delete file </button>
         <button class="btn" @click="showCreateFolderFN">create folder </button>
-        <button class="btn" @click="moveFile">moveFile </button>
         <h1>Origin: {{fileOrigin+addDot(folderOptionName)}}</h1>
         <h1>Destiny: {{fileDestiny+addDot(folderOptionName)}}</h1>
         <h1>MoveReturn : {{moveReturn}}</h1>
@@ -278,7 +277,7 @@
                 const res = await axios.post(this.hostname, {
                         query:`mutation{
                                 downloadList(owner:{
-                                    owner:"sergio"
+                                    owner:"`+localStorage.name+`"
                                 },input:{
                                     email:"`+localStorage.email+`",
                                     token:"`+localStorage.token+`"
@@ -326,8 +325,8 @@
                     const res = await axios.post(this.hostname, {
                         query:`mutation{
                             createFolder(create:{
-                                owner: "sergio"
-                            path: "/SharedStorage/sergio/`+this.folderName+`"
+                                owner: "`+localStorage.name+`"
+                            path: "/SharedStorage/`+localStorage.name.trim()+`/`+this.folderName+`"
                         },input:{
                             email: "`+localStorage.email+`"
                             token: "`+localStorage.token+`"
@@ -340,7 +339,7 @@
                         }
                     }`
                 })
-                console.log(res);
+                console.log(res.data.data.createFolder);
                 }else{
                     this.adviseError("El nombre no puede estar vacio")
                 }
@@ -349,7 +348,7 @@
                 let data= new FormData()
                 let file =  event.target.files[0]
                 //console.log(file.name);
-                let operations ='{ "query": "mutation($uploads: [Upload!]!){  uploadFiles(files:{    uploads:$uploads    name: \\"'+file.name+'\\"    description:\\"prueba gql\\"    owner: \\"sergio\\"  },input:{email:\\"'+localStorage.email+'\\" token: \\"'+localStorage.token+'\\"})  {    name description owner path advise  }}", "variables": { "uploads": [null] } }'
+                let operations ='{ "query": "mutation($uploads: [Upload!]!){  uploadFiles(files:{    uploads:$uploads    name: \\"'+file.name+'\\"    description:\\"prueba gql\\"    owner: \\"'+localStorage.name+'\\"  },input:{email:\\"'+localStorage.email+'\\" token: \\"'+localStorage.token+'\\"})  {    name description owner path advise  }}", "variables": { "uploads": [null] } }'
                 data.append("operations",operations)
                 data.append('map','{ "0": ["variables.uploads.0"] }')
                 data.append('0',file)
@@ -366,7 +365,7 @@
                     if(this.fileDestiny == "Extraer de la carpeta"){
                         console.log(this.fileOrigin);
                         this.fileOrigin = this.fileOrigin.replace("/SharedStorage","")
-                        this.fileOrigin = this.fileOrigin.replace("/sergio","")
+                        this.fileOrigin = this.fileOrigin.replace("/"+localStorage.name.trim(),"")
                         console.log(this.fileOrigin);
 
                         let tmp = this.fileOrigin.split("/")
@@ -380,9 +379,9 @@
                              this.fileOrigin = "/"+this.addDot(this.folderOptionName)
                         }
                         this.fileDestiny = this.fileOrigin.replace(this.addDot(this.folderOptionName),"") + this.fileDestiny
-                        this.fileDestiny = this.fileDestiny.replace("/"+"sergio","")
+                        this.fileDestiny = this.fileDestiny.replace("/"+localStorage.name.trim(),"")
                         this.fileDestiny = this.fileDestiny.replace("/SharedStorage","")
-                        this.fileOrigin = this.fileOrigin.replace("/"+"sergio","")
+                        this.fileOrigin = this.fileOrigin.replace("/"+localStorage.name.trim(),"")
                         this.fileOrigin = this.fileOrigin.replace("/SharedStorage","")
                         this.fileDestiny += "/"+this.addDot(this.folderOptionName)
                         console.log(this.fileOrigin);
@@ -393,11 +392,11 @@
                     const res = await axios.post(this.hostname, {
                         query:`mutation{
                                     moveFile(move:{
-                                        owner:"sergio"
+                                        owner:"`+localStorage.name+`"
                                         #origen, incluyendo el archivo (graphql en este caso)
-                                        origin:"/SharedStorage/sergio/`+this.fileOrigin+`"
+                                        origin:"/SharedStorage/`+localStorage.name.trim()+`/`+this.fileOrigin+`"
                                         #destino, incluyendo el archivo (graphql en este caso)
-                                        destiny:"/SharedStorage/sergio/`+this.fileDestiny+`"
+                                        destiny:"/SharedStorage/`+localStorage.name.trim()+`/`+this.fileDestiny+`"
 
                                     },input:{
                                         email: "`+localStorage.email+`"
