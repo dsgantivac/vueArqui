@@ -1,14 +1,12 @@
 <template>
   <div id="app_vue" >
-
-
-    <div id="nav">
-      <router-link    tag='button'                    class="navButn"  to="/"      >Home</router-link>
+    <div id="nav" class="navBar">
       <router-link v-if="showLogin"   tag='button'    class="navButn"  to="/login" >Login</router-link>
       <router-link v-if="showLogin"   tag='button'    class="navButn"  to="/signUp">Sign Up</router-link>
-      <router-link v-if="showData"    tag='button'    class="navButn"  to="/Data"  >Data</router-link>
-      <button      v-if="showData"    @click="logOut"                       class="navButn"              >logOut</button>
+      <router-link v-if="showData"    tag='button'    class="navButn"  to="/Data"  >Archivos</router-link>
+      <button      v-if="showData"    @click="logOut" class="navButn"              >logOut</button>
       <!--
+      <router-link    tag='button'                    class="navButn"  to="/"      >Home</router-link>
         <button @click="getStatus">status</button>|
       -->
     </div>
@@ -30,7 +28,7 @@
     methods:{
       async logOut  () {
         localStorage.session = false;
-        this.$router.push({name: 'home'})
+        this.$router.push({name: 'login'})
         console.log(localStorage.session);
         console.log("se eejcuta");
         this.checkSession()
@@ -61,18 +59,37 @@
 
 <style>
 
+.navBar{
+  background: #8E2DE2;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #4A00E0, #8E2DE2);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #4A00E0, #8E2DE2); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 
+}
 
 .navButn{
   border: none;
-  background: #694ed6;
-  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0);
+
+  /*background: #694ed6;
   border-radius: 15px;
-  margin: 10px 10px 0px 10px;
+  box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.2);
+  */
+
+  border-radius: 20px;
+  font-size: 25px;
+  font-weight: bold;
+  margin: 0px 7.5% 0px 7.5%;
   padding: 16px;
   width: 200px;
+  cursor: pointer;
   color: white;
-  box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.2);
+  transition: 0.5s;
+}
+.navButn:hover{
+  background-color: white;
+  color: #4A00E0;
+  border-radius: 20px;
+  transition: 0.5s;
 }
 
 

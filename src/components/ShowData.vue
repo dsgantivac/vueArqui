@@ -1,14 +1,13 @@
 <template>
     <div  class="login">
-        <h1>welcome to data {{name}}</h1>
+        <h1>Bienvenido {{name}} &#129299;</h1>
         <h2 style="margin-bottom:30px;">{{email}}</h2>
-        <h2 style="margin-bottom:30px;">{{token}}</h2>
 
         <div v-if="current_path.length > 1">
             <button class="btn" style="float:left" @click="popCurrentPath" >Retroceder</button>
         </div>
-            <div style="clear:both;"></div>
-            <div  v-for="(elements, index) in current_path[current_path.length-1]" :key="index" class="listContainer">
+            <div style="clear:both;" ></div>
+            <div style="margin-left:100px" v-for="(elements, index) in current_path[current_path.length-1]" :key="index" class="listContainer">
                 <div class="folder-container" height="120px">
 
                     <div v-if="checkDot(elements.name)">
@@ -29,11 +28,12 @@
 
                     <div v-if="!checkDot(elements.name)">
                         <div @click="moveTo(elements.files)">
-                            <img height="120px" src="../assets/folder3.png" >
+
+                            <i class="material-icons" style="font-size:140px;color:gray">folder</i>
                             <div class="centered"  >{{addDot(elements.name)}} </div>
                         </div>
                     </div>
-                    <span @click="getOptions(elements.name,elements.path)"  class="glyphicon glyphicon-option-vertical bottom-right-image" ></span>
+                    <span @click="getOptions(elements.name,elements.path)"  class="glyphicon glyphicon-option-horizontal bottom-right-image" ></span>
                 </div>
             </div>
 

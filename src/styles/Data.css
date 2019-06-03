@@ -134,7 +134,7 @@ body {
     text-align: center;
     color: black;
     float: left;
-    margin: 0px 10px 0px 0px;
+    margin: 20px;
     cursor: pointer;
 
   }
@@ -150,8 +150,8 @@ body {
 
   .bottom-right-image{
     position: absolute;
-    bottom: 8px;
-    right: 16px;
+    top: 125px;
+    right: 5px;
   }
 
 
