@@ -14,6 +14,7 @@ RUN npm install @vue/cli@3.7.0 -g
 RUN npm install express express-graphql graphql --save
 RUN npm install --save axios
 RUN npm install cors --save
+RUN npm install downloadjs
 
 # start app
 CMD ["npm", "run", "serve"]
