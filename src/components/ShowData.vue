@@ -23,7 +23,6 @@
                                 <img height="120px" src="../assets/file.png" >
                             </div>
                             <div class="centered">{{addDot(elements.name)}} </div>
-                            <div class="centered">{{addDot(elements.path)}} </div>
                         </div>
 
                     </div>
@@ -97,9 +96,6 @@
 
 
         <button class="btn" @click="showCreateFolderFN">create folder </button>
-        <h1>Origin: {{fileOrigin+addDot(folderOptionName)}}</h1>
-        <h1>Destiny: {{fileDestiny+addDot(folderOptionName)}}</h1>
-        <h1>MoveReturn : {{moveReturn}}</h1>
 
     </div>
 </template>
@@ -144,8 +140,7 @@
                     this.email = localStorage.email
                     this.token = localStorage.token
                     console.log("in session");
-                    this.getList()
-                    this.current_path.push(this.user_files)
+                    this.updateList()
                 }
             }
         },
@@ -194,6 +189,15 @@
                 }
                 console.log(this.possiblePaths);
                 this.MoveToShow = !this.MoveToShow
+            },
+            updateList(){
+                this.current_path = []
+                this.user_files = []
+                this.getList()
+                this.current_path.push(this.user_files)
+            },
+            forceUpdate(){
+                this.$forceUpdate();
             }
             ,
             async getDownload (filePath) {
@@ -263,6 +267,7 @@
                                 }`
                 })
                 console.log(res.data.data);
+                this.updateList()
 
 
             },
@@ -313,6 +318,7 @@
                                 }`
                 })
                 let tmp = res.data.data.downloadList.files;
+
                 console.log(res);
                 for (let index = 0; index < tmp.length; index++) {
                     this.user_files.push(tmp[index])
@@ -340,6 +346,8 @@
                     }`
                 })
                 console.log(res.data.data.createFolder);
+                this.updateList()
+
                 }else{
                     this.adviseError("El nombre no puede estar vacio")
                 }
@@ -359,6 +367,7 @@
 
                 console.log(file);
                 this.upload = res.data.data
+                this.updateList()
             },
             async moveFile () {
 
@@ -413,6 +422,7 @@
                                 }`
                 })
                 this.moveReturn = res.data.data.moveFile
+                this.updateList()
                 console.log(res.data.data);
 
             }
