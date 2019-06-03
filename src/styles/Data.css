@@ -80,7 +80,9 @@ body {
 
   .upload{
     width: 100%;
+    display: inline-block;
     margin: 0 auto;
+    margin-right: 10px;
     text-align: center;
     background: #694ed6;
     cursor: pointer;
@@ -88,6 +90,7 @@ body {
     padding: 16px;
     width: 180px;
     color: white;
+    font-weight: bold;
     font-size: 20px;
     box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.2);
     cursor: pointer;
@@ -111,12 +114,14 @@ body {
   .btn{
     border: none;
     background: #694ed6;
-    margin: 10px 10px 0 10px;
+    margin: 0 auto;
     cursor: pointer;
     border-radius: 3px;
     padding: 16px;
-    width: 200px;
+    width: 180px;
+    height: 65px;
     color: white;
+    font-weight: bold;
     font-size: 20px;
     box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.2);
     

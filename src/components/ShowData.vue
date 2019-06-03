@@ -39,13 +39,6 @@
 
         <div style="clear:both;"></div>
 
-        <div class="upload" >
-            <label  for="file" style="cursor:pointer">
-                upload file  <span class="glyphicon glyphicon-upload"></span>
-            </label>
-            <input class="inputfile" id="file" type="file" @change="processFile($event)">
-        </div>
-
         <div class="OptionCard" v-if="showOptions">
             <div class="cardContent" style="height:330px" >
                 <div class="cardTitle" >
@@ -94,8 +87,15 @@
             </div>
         </div>
 
+        <!-- UPLOAD AND CREATE FOLDER BUTONS   -->
 
-        <button class="btn" @click="showCreateFolderFN">create folder </button>
+            <div class="upload" >
+                <label  for="file" style="cursor:pointer">
+                    upload file  <span class="glyphicon glyphicon-upload"></span>
+                </label>
+                <input class="inputfile" id="file" type="file" @change="processFile($event)">
+            </div>
+            <button class="btn"  @click="showCreateFolderFN">create folder </button>
 
     </div>
 </template>
@@ -282,7 +282,7 @@
                 const res = await axios.post(this.hostname, {
                         query:`mutation{
                                 downloadList(owner:{
-                                    owner:"`+localStorage.name+`"
+                                    owner:"`+localStorage.name.trim()+`"
                                 },input:{
                                     email:"`+localStorage.email+`",
                                     token:"`+localStorage.token+`"
@@ -331,7 +331,7 @@
                     const res = await axios.post(this.hostname, {
                         query:`mutation{
                             createFolder(create:{
-                                owner: "`+localStorage.name+`"
+                                owner: "`+localStorage.name.trim()+`"
                             path: "/SharedStorage/`+localStorage.name.trim()+`/`+this.folderName+`"
                         },input:{
                             email: "`+localStorage.email+`"
@@ -356,7 +356,7 @@
                 let data= new FormData()
                 let file =  event.target.files[0]
                 //console.log(file.name);
-                let operations ='{ "query": "mutation($uploads: [Upload!]!){  uploadFiles(files:{    uploads:$uploads    name: \\"'+file.name+'\\"    description:\\"prueba gql\\"    owner: \\"'+localStorage.name+'\\"  },input:{email:\\"'+localStorage.email+'\\" token: \\"'+localStorage.token+'\\"})  {    name description owner path advise  }}", "variables": { "uploads": [null] } }'
+                let operations ='{ "query": "mutation($uploads: [Upload!]!){  uploadFiles(files:{    uploads:$uploads    name: \\"'+file.name+'\\"    description:\\"prueba gql\\"    owner: \\"'+localStorage.name.trim()+'\\"  },input:{email:\\"'+localStorage.email+'\\" token: \\"'+localStorage.token+'\\"})  {    name description owner path advise  }}", "variables": { "uploads": [null] } }'
                 data.append("operations",operations)
                 data.append('map','{ "0": ["variables.uploads.0"] }')
                 data.append('0',file)
@@ -401,7 +401,7 @@
                     const res = await axios.post(this.hostname, {
                         query:`mutation{
                                     moveFile(move:{
-                                        owner:"`+localStorage.name+`"
+                                        owner:"`+localStorage.name.trim()+`"
                                         #origen, incluyendo el archivo (graphql en este caso)
                                         origin:"/SharedStorage/`+localStorage.name.trim()+`/`+this.fileOrigin+`"
                                         #destino, incluyendo el archivo (graphql en este caso)
