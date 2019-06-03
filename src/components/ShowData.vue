@@ -8,7 +8,7 @@
         </div>
         <div style="clear:both;" ></div>
 
-
+        <!--Start folders and files generation-->
             <div  v-for="(elements, index) in current_path[current_path.length-1]" :key="index" class="listContainer">
                 <div class="folder-container" height="120px">
 
@@ -38,7 +38,8 @@
                     <span @click="getOptions(elements.name,elements.path)"  class="glyphicon glyphicon-option-horizontal bottom-right-image" ></span>
                 </div>
             </div>
-       
+
+        <!--End folders and files generation-->
 
         <div style="clear:both;"></div>
 
