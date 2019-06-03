@@ -6,8 +6,10 @@
         <div v-if="current_path.length > 1">
             <button class="btn" style="float:left" @click="popCurrentPath" >Retroceder</button>
         </div>
-            <div style="clear:both;" ></div>
-            <div style="margin-left:100px" v-for="(elements, index) in current_path[current_path.length-1]" :key="index" class="listContainer">
+        <div style="clear:both;" ></div>
+
+
+            <div  v-for="(elements, index) in current_path[current_path.length-1]" :key="index" class="listContainer">
                 <div class="folder-container" height="120px">
 
                     <div v-if="checkDot(elements.name)">
@@ -19,7 +21,7 @@
                                 <img height="120px" src="../assets/pdf.png" >
                             </div>
                             <div v-else>
-                                <img height="120px" src="../assets/file.png" >
+                                <img height="140px" src="https://img.icons8.com/cotton/100/000000/open-document.png" >
                             </div>
                             <div class="centered">{{addDot(elements.name)}} </div>
                         </div>
@@ -36,6 +38,7 @@
                     <span @click="getOptions(elements.name,elements.path)"  class="glyphicon glyphicon-option-horizontal bottom-right-image" ></span>
                 </div>
             </div>
+       
 
         <div style="clear:both;"></div>
 

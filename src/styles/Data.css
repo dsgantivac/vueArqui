@@ -136,11 +136,10 @@ body {
     float: left;
     margin: 20px;
     cursor: pointer;
-
   }
 
   .folder-container:hover{
-    opacity: 0.8;
+    background-color: rgba(0, 0, 0, 0.2)
   }
 
 
@@ -150,7 +149,7 @@ body {
 
   .bottom-right-image{
     position: absolute;
-    top: 125px;
+    top: 145px;
     right: 5px;
   }
 
