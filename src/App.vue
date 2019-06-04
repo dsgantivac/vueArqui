@@ -1,4 +1,5 @@
 <template>
+  <div id="fondo">
   <div id="app_vue" >
     <div id="nav" class="navBar">
       <router-link v-if="showLogin"   tag='button'    class="navButn"  to="/login" >Login</router-link>
@@ -11,6 +12,7 @@
       -->
     </div>
     <router-view/>
+  </div>
   </div>
 </template>
 
@@ -63,7 +65,9 @@
   background: #8E2DE2;  /* fallback for old browsers */
   background: -webkit-linear-gradient(to right, #4A00E0, #8E2DE2);  /* Chrome 10-25, Safari 5.1-6 */
   background: linear-gradient(to right, #4A00E0, #8E2DE2); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-
+  margin-left: 20%;
+  margin-right: 20%;
+  margin-top: 2%;
 }
 
 .navButn{
@@ -93,7 +97,15 @@
 }
 
 
-
+#fondo{
+  background: #d6c7dd;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #d6c7dd,#d6c7dd);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #d6c7dd, #d6c7dd); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  margin:0%;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
 #app_vue {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
