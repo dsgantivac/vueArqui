@@ -130,8 +130,8 @@
                 possiblePaths: [],
                 fileOrigin: "",
                 fileDestiny: "",
-//                hostname: "http://192.168.99.101:5000/graphql"
-                hostname: "http://34.73.216.116:5000/graphql"
+                //hostname: "http://192.168.99.101:5000/graphql"
+                hostname: "http://35.237.206.16:2870/graphql"
             }
         },
         mounted(){
@@ -212,7 +212,8 @@
                         path: "`+filePath+`"
                     },input:{
                         email: "`+localStorage.email+`"
-                        token: "`+localStorage.token+`"    
+                        token: "`+localStorage.token+`"
+                        mobil: "false"
                     }){
                         base64
                         name
@@ -261,6 +262,7 @@
                                 },input:{
                                     email: "`+localStorage.email+`"
                                     token: "`+localStorage.token+`"
+                                    mobil: "false"
                                 }){
                                     del_id
                                     owner
@@ -290,6 +292,7 @@
                                 },input:{
                                     email:"`+localStorage.email+`",
                                     token:"`+localStorage.token+`"
+                                    mobil: "false"
                                 }){
                                     name
                                     owner
@@ -321,12 +324,18 @@
                                     path
                                 }`
                 })
-                let tmp = res.data.data.downloadList.files;
+                //console.log("downloadList");
+                //console.log(res.data.data.downloadList);
 
-                console.log(res);
-                for (let index = 0; index < tmp.length; index++) {
-                    this.user_files.push(tmp[index])
+                if(res.data.data.downloadList != null){
+                    let tmp = res.data.data.downloadList.files;
+                    for (let index = 0; index < tmp.length; index++) {
+                        this.user_files.push(tmp[index])
+                    }
                 }
+
+
+
             }
             ,
             async createFolder  () {
@@ -340,6 +349,7 @@
                         },input:{
                             email: "`+localStorage.email+`"
                             token: "`+localStorage.token+`"
+                            mobil: "false"
                         }){
                             create_id
                             owner
@@ -360,7 +370,7 @@
                 let data= new FormData()
                 let file =  event.target.files[0]
                 //console.log(file.name);
-                let operations ='{ "query": "mutation($uploads: [Upload!]!){  uploadFiles(files:{    uploads:$uploads    name: \\"'+file.name+'\\"    description:\\"prueba gql\\"    owner: \\"'+localStorage.name.trim()+'\\"  },input:{email:\\"'+localStorage.email+'\\" token: \\"'+localStorage.token+'\\"})  {    name description owner path advise  }}", "variables": { "uploads": [null] } }'
+                let operations ='{ "query": "mutation($uploads: [Upload!]!){  uploadFiles(files:{    uploads:$uploads    name: \\"'+file.name+'\\"    description:\\"prueba gql\\"    owner: \\"'+localStorage.name.trim()+'\\"  },input:{email:\\"'+localStorage.email+'\\" token: \\"'+localStorage.token+'\\" mobil: \\"false\\"})  {    name description owner path advise  }}", "variables": { "uploads": [null] } }'
                 data.append("operations",operations)
                 data.append('map','{ "0": ["variables.uploads.0"] }')
                 data.append('0',file)
@@ -414,6 +424,7 @@
                                     },input:{
                                         email: "`+localStorage.email+`"
                                         token: "`+localStorage.token+`"
+                                        mobil: "false"
                                     })
                                     {
                                         move_id
