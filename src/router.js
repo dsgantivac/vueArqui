@@ -33,6 +33,11 @@ export default new Router({
       name: 'Data',
       component: Data
     },
+    {
+      path: '/soap',
+      name: 'home',
+      component: Home
+    },
 
   ]
 })

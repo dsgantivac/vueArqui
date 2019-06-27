@@ -15,6 +15,7 @@ RUN npm install express express-graphql graphql --save
 RUN npm install --save axios
 RUN npm install cors --save
 RUN npm install downloadjs
+RUN npm install --save firebase
 
 # start app
 CMD ["npm", "run", "serve"]
