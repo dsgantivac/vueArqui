@@ -63,6 +63,7 @@ export default {
                     email: "`+this.email+`"
                     password: "`+this.password+`"
                     mobil: "false"
+                    messaging: "pruebaaaaa"
                 }){
                     advise
                     token
