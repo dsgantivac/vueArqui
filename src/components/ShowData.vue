@@ -174,7 +174,7 @@
                 fileOrigin: "",
                 fileDestiny: "",
                 //hostname: "http://192.168.99.101:5000/graphql"
-                hostname: "http://undrive-proxy/graphql"
+                hostname: "http://34.73.18.31:2870/graphql"
             }
         },
         mounted(){
