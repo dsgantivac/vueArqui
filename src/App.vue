@@ -99,13 +99,14 @@
 
 
 #fondo{
-  background: #d6c7dd;  /* fallback for old browsers */
-  background: -webkit-linear-gradient(to right, #d6c7dd,#d6c7dd);  /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(to right, #d6c7dd, #d6c7dd); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background-image: url("./assets/download.png");
+  /*background-image: url("https://i.kinja-img.com/gawker-media/image/upload/s--Wv3ouipp--/c_fill,fl_progressive,g_center,h_900,q_80,w_1600/811116324189419953.jpg");*/
   margin:0%;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
+  background-size: cover;
   position: absolute;
+  animation: crescendo 1.5s alternate infinite ease-in;
 }
 #app_vue {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
@@ -122,4 +123,6 @@
 #nav a.router-link-exact-active {
   color: #694ed6;
 }
+
+
 </style>
