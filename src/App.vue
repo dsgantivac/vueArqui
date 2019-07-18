@@ -106,7 +106,7 @@
   height: 100vh;
   background-size: cover;
   position: absolute;
-  animation: crescendo 1.5s alternate infinite ease-in;
+  /*animation: crescendo 1.5s alternate infinite ease-in;*/
 }
 #app_vue {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
@@ -124,5 +124,8 @@
   color: #694ed6;
 }
 
-
+@keyframes crescendo {
+  0%   {transform: scale(.8);}
+  100% {transform: scale(1.5);}
+}
 </style>
