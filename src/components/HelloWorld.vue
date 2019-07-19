@@ -36,7 +36,7 @@
                 fileOrigin: "",
                 fileDestiny: "",
                 //hostname: "http://192.168.99.101:5000/graphql"
-                hostname: "http://35.237.206.16:2870/graphql"
+                hostname: "http://34.73.18.31:3030/graphql"
             }
         },
         methods: {
