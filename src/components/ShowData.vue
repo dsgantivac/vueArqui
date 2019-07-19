@@ -15,13 +15,13 @@
                     <div v-if="checkDot(elements.name)">
                         <div @click="getDownload(elements.path)">
                             <div v-if="getExtension(elements.name) == 'txt' ">
-                                <img height="120px" src="../assets/txt.png" >
+                                <img height="120px" style="padding: 20px" src="../assets/txt.png" >
                             </div>
                             <div v-else-if="getExtension(elements.name) == 'pdf' ">
-                                <img height="120px" src="../assets/pdf.png" >
+                                <img height="120px" style="padding: 20px" src="../assets/pdf.png" >
                             </div>
                             <div v-else>
-                                <img height="140px" src="https://img.icons8.com/cotton/100/000000/open-document.png" >
+                                <img height="140px" style="padding: 20px" src="https://img.icons8.com/cotton/100/000000/open-document.png" >
                             </div>
                             <div class="centered">{{addDot(elements.name)}} </div>
                         </div>
@@ -194,7 +194,16 @@
         methods: {
 
             addDot: function (name) {
-                return name.replace("_dot_",".")
+                let nameResumed = ""
+                name = name.replace("_dot_",".")
+                if(name.length > 15){
+                    for (let index = 0; index < 10; index++) {
+                        nameResumed += name[index];
+                    }
+                    nameResumed += "..."
+                    return nameResumed
+                }
+                return name
             },
             checkDot: function(name){
                 return(name.includes("_dot_"))
