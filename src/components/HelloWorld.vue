@@ -2,10 +2,15 @@
     <div  class="login">
         <div style="clear:both;"></div>
             <button class="btn"  @click="soap">soap</button>
-            <div v-for="(image,index) in image64" :key="index">
-              <img v-bind:src="image"/>
-            </div>
+            <div>
             
+
+            <div v-for="(image,index) in image64" :key="index" style="display:inline" >
+              <img v-bind:src="image" width="240px" height="240px" style="margin:30px"/>
+            </div>
+
+            </div>
+
     </div>
 </template>
 
