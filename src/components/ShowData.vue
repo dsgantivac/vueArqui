@@ -21,7 +21,7 @@
                                 <img height="120px" style="padding: 20px" src="../assets/pdf.png" >
                             </div>
                             <div v-else>
-                                <img height="140px" style="padding: 20px" src="https://img.icons8.com/cotton/100/000000/open-document.png" >
+                                <img height="140px" style="padding: 20px" src="../assets/openDocument.png" >
                             </div>
                             <div class="centered">{{addDot(elements.name)}} </div>
                         </div>
@@ -197,7 +197,7 @@
                 let nameResumed = ""
                 name = name.replace("_dot_",".")
                 if(name.length > 15){
-                    for (let index = 0; index < 10; index++) {
+                    for (let index = 0; index < 12; index++) {
                         nameResumed += name[index];
                     }
                     nameResumed += "..."
